@@ -2,7 +2,7 @@ package gs.location_scanner
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import gs.location_scanner.ui.main.MainFragment
+import gs.location_scanner.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

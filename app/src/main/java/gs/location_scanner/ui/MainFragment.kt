@@ -1,4 +1,4 @@
-package gs.location_scanner.ui.main
+package gs.location_scanner.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +22,16 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
+
+        fragmentBinding.fetchGpsData.setOnClickListener {
+        }
+
+        fragmentBinding.fetchWifiData.setOnClickListener {
+        }
+
+        fragmentBinding.saveDataPoint.setOnClickListener {
+        }
+
         return fragmentBinding.root
     }
 
@@ -29,5 +39,4 @@ class MainFragment : Fragment() {
         super.onDestroy()
         _fragmentBinding = null
     }
-
 }
