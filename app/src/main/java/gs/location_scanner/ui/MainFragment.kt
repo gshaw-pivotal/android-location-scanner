@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import gs.location_scanner.databinding.MainFragmentBinding
+import gs.location_scanner.service.WifiScanStatus
+import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {
+
+    private val wifiScannerService = WifiScannerService()
+
+    private var wifiScanInProgress: Boolean = false
 
     companion object {
         fun newInstance() = MainFragment()
@@ -23,14 +29,42 @@ class MainFragment : Fragment() {
     ): View {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
 
+        wifiScannerService.setup(requireContext())
+
         fragmentBinding.fetchGpsData.setOnClickListener {
         }
 
         fragmentBinding.fetchWifiData.setOnClickListener {
+            if (!wifiScanInProgress) {
+                wifiScanInProgress = true
+                fragmentBinding.fetchWifiDataStatus.text = ""
+                wifiScannerService.performScan(requireContext())
+            }
         }
 
         fragmentBinding.saveDataPoint.setOnClickListener {
         }
+
+        wifiScannerService.wifiScanStatus.observe(viewLifecycleOwner, {
+            when (it) {
+                WifiScanStatus.NO_STATUS -> {
+                    wifiScanInProgress = false
+                    fragmentBinding.fetchWifiDataStatus.text = ""
+                }
+                WifiScanStatus.IN_PROGRESS -> {
+                    wifiScanInProgress = true
+                    fragmentBinding.fetchWifiDataStatus.text = "Scanning"
+                }
+                WifiScanStatus.LAST_SCAN_SUCCESS -> {
+                    wifiScanInProgress = false
+                    fragmentBinding.fetchWifiDataStatus.text = "Scan Succeeded"
+                }
+                WifiScanStatus.LAST_SCAN_FAILED -> {
+                    wifiScanInProgress = false
+                    fragmentBinding.fetchWifiDataStatus.text = "Scan Failed"
+                }
+            }
+        })
 
         return fragmentBinding.root
     }

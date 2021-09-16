@@ -135,6 +135,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="Fetch WiFi data" />
 
+            <TextView
+                android:id="@+id/fetch_wifi_data_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_gravity="center"
+                android:paddingStart="4dp"
+                android:textSize="20dp"/>
+
         </LinearLayout>
 
     </LinearLayout>
