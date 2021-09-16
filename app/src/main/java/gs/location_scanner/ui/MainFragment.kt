@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import gs.location_scanner.R
 import gs.location_scanner.databinding.MainFragmentBinding
 import gs.location_scanner.service.WifiScanStatus
 import gs.location_scanner.service.WifiScannerService
@@ -30,6 +31,8 @@ class MainFragment : Fragment() {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
 
         wifiScannerService.setup(requireContext())
+
+        fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
 
         fragmentBinding.fetchGpsData.setOnClickListener {
         }
@@ -63,6 +66,14 @@ class MainFragment : Fragment() {
                     wifiScanInProgress = false
                     fragmentBinding.fetchWifiDataStatus.text = "Scan Failed"
                 }
+            }
+        })
+
+        wifiScannerService.wifiScanResultCount.observe(viewLifecycleOwner, {
+            if (it != null) {
+                fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, it.toString())
+            } else {
+                fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
             }
         })
 

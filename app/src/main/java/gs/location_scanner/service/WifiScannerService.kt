@@ -15,6 +15,8 @@ class WifiScannerService {
 
     val wifiScanStatus: MutableLiveData<WifiScanStatus> = MutableLiveData(WifiScanStatus.NO_STATUS)
 
+    val wifiScanResultCount: MutableLiveData<Int> = MutableLiveData(null)
+
     fun setup(context: Context) {
         wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -28,7 +30,6 @@ class WifiScannerService {
                     scanFailure()
                 }
             }
-
         }
     }
 
@@ -38,6 +39,7 @@ class WifiScannerService {
         context.registerReceiver(wifiScanReceiver, intentFilter)
 
         wifiScanStatus.postValue(WifiScanStatus.IN_PROGRESS)
+        wifiScanResultCount.postValue(null)
         val scanSuccess = wifiManager.startScan()
         if (!scanSuccess) {
             scanFailure()
@@ -45,7 +47,9 @@ class WifiScannerService {
     }
 
     private fun scanSuccess() {
-        wifiManager.scanResults
+        val result = wifiManager.scanResults
+
+        wifiScanResultCount.postValue(result.size)
 
         wifiScanStatus.postValue(WifiScanStatus.LAST_SCAN_SUCCESS)
     }

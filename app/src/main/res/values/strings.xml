@@ -6,4 +6,5 @@
     <string name="altitude">Altitude</string>
     <string name="fetch_wifi_data">Fetch WiFi data</string>
     <string name="save_data_point">Save data point</string>
+    <string name="detected_wifi_network_count">Detected Wifi network count: %1$s</string>
 </resources>

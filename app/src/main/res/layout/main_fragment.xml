@@ -146,6 +146,14 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/wifi_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            tools:text="@string/detected_wifi_network_count" />
+
     </LinearLayout>
 
     <Button
