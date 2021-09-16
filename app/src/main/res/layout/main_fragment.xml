@@ -32,7 +32,7 @@
                 android:layout_weight="0.5"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="Fetch GPS data" />
+                android:text="@string/fetch_gps_data" />
 
         </LinearLayout>
 
@@ -49,7 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Latitude"
+                android:text="@string/latitude"
                 android:textSize="20dp"/>
 
             <TextView
@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Longitude"
+                android:text="@string/longitude"
                 android:textSize="20dp"/>
 
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Altitude"
+                android:text="@string/altitude"
                 android:textSize="20dp"/>
 
             <TextView
@@ -133,7 +133,7 @@
                 android:layout_weight="0.5"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="Fetch WiFi data" />
+                android:text="@string/fetch_wifi_data" />
 
             <TextView
                 android:id="@+id/fetch_wifi_data_status"
@@ -152,6 +152,6 @@
         android:id="@+id/save_data_point"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save data point" />
+        android:text="@string/save_data_point" />
 
 </LinearLayout>
