@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import androidx.lifecycle.MutableLiveData
+import gs.location_scanner.data.WifiNetworkStats
 
 class WifiScannerService {
 
@@ -16,6 +17,8 @@ class WifiScannerService {
     val wifiScanStatus: MutableLiveData<WifiScanStatus> = MutableLiveData(WifiScanStatus.NO_STATUS)
 
     val wifiScanResultCount: MutableLiveData<Int> = MutableLiveData(null)
+
+    val wifiScanResults: MutableLiveData<List<WifiNetworkStats>> = MutableLiveData(null)
 
     fun setup(context: Context) {
         wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -39,6 +42,7 @@ class WifiScannerService {
         context.registerReceiver(wifiScanReceiver, intentFilter)
 
         wifiScanStatus.postValue(WifiScanStatus.IN_PROGRESS)
+        wifiScanResults.postValue(null)
         wifiScanResultCount.postValue(null)
         val scanSuccess = wifiManager.startScan()
         if (!scanSuccess) {
@@ -49,8 +53,12 @@ class WifiScannerService {
     private fun scanSuccess() {
         val result = wifiManager.scanResults
 
-        wifiScanResultCount.postValue(result.size)
+        val wifiNetworkStatList = result.map {
+                network -> WifiNetworkStats(network.SSID, network.BSSID, network.level)
+        }
 
+        wifiScanResultCount.postValue(result.size)
+        wifiScanResults.postValue(wifiNetworkStatList)
         wifiScanStatus.postValue(WifiScanStatus.LAST_SCAN_SUCCESS)
     }
 
