@@ -54,7 +54,12 @@ class WifiScannerService {
         val result = wifiManager.scanResults
 
         val wifiNetworkStatList = result.map {
-                network -> WifiNetworkStats(network.SSID, network.BSSID, network.level)
+                network -> WifiNetworkStats(
+                                network.SSID,
+                                network.BSSID,
+                                network.level,
+                                network.frequency
+                            )
         }
 
         wifiScanResultCount.postValue(result.size)
