@@ -154,6 +154,14 @@
             android:textSize="20dp"
             tools:text="@string/detected_wifi_network_count" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wifi_details_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/wifi_details_list_item_fragment" />
+
     </LinearLayout>
 
     <Button

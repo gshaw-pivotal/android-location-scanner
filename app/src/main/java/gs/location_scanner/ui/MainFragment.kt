@@ -12,6 +12,8 @@ import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {
 
+    private val wifiDetailsListAdaptor = WifiDetailsListAdapter()
+
     private val wifiScannerService = WifiScannerService()
 
     private var wifiScanInProgress: Boolean = false
@@ -29,6 +31,8 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
+
+        fragmentBinding.wifiDetailsList.adapter = wifiDetailsListAdaptor
 
         wifiScannerService.setup(requireContext())
 
@@ -67,6 +71,10 @@ class MainFragment : Fragment() {
                     fragmentBinding.fetchWifiDataStatus.text = "Scan Failed"
                 }
             }
+        })
+
+        wifiScannerService.wifiScanResults.observe(viewLifecycleOwner, {
+            wifiDetailsListAdaptor.submitList(it)
         })
 
         wifiScannerService.wifiScanResultCount.observe(viewLifecycleOwner, {
