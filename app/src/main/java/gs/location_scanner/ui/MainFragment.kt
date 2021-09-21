@@ -36,71 +36,22 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
-
+        
         fragmentBinding.wifiDetailsList.adapter = wifiDetailsListAdaptor
 
         wifiScannerService.setup(requireContext())
 
         gpsScannerService.setup(requireContext())
 
-        fragmentBinding.gpsLatData.text = "N/A"
-        fragmentBinding.gpsLongData.text = "N/A"
-        fragmentBinding.gpsAltData.text = "N/A"
+        setupInitialText()
+        setupClickListeners()
+        setupGPSObservers()
+        setupWifiObservers()
 
-        fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
+        return fragmentBinding.root
+    }
 
-        fragmentBinding.fetchGpsData.setOnClickListener {
-            if (!gpsScanInProgress) {
-                gpsScanInProgress = true
-                fragmentBinding.fetchGpsDataStatus.text = ""
-                gpsScannerService.getLocation(requireContext())
-            }
-        }
-
-        fragmentBinding.fetchWifiData.setOnClickListener {
-            if (!wifiScanInProgress) {
-                wifiScanInProgress = true
-                fragmentBinding.fetchWifiDataStatus.text = ""
-                wifiScannerService.performScan(requireContext())
-            }
-        }
-
-        fragmentBinding.saveDataPoint.setOnClickListener {
-        }
-
-        gpsScannerService.gpsScanStatus.observe(viewLifecycleOwner, {
-            when (it) {
-                ScanStatus.NO_STATUS -> {
-                    gpsScanInProgress = false
-                    fragmentBinding.fetchGpsDataStatus.text = ""
-                }
-                ScanStatus.IN_PROGRESS -> {
-                    gpsScanInProgress = true
-                    fragmentBinding.fetchGpsDataStatus.text = "Scanning"
-                }
-                ScanStatus.LAST_SCAN_SUCCESS -> {
-                    gpsScanInProgress = false
-                    fragmentBinding.fetchGpsDataStatus.text = "Scan Succeeded"
-                }
-                ScanStatus.LAST_SCAN_FAILED -> {
-                    gpsScanInProgress = false
-                    fragmentBinding.fetchGpsDataStatus.text = "Scan Failed"
-                }
-            }
-        })
-
-        gpsScannerService.gpsScanResults.observe(viewLifecycleOwner, {
-            if (it != null) {
-                fragmentBinding.gpsLatData.text = it.latitude
-                fragmentBinding.gpsLongData.text = it.longitude
-                fragmentBinding.gpsAltData.text = "N/A"
-            } else {
-                fragmentBinding.gpsLatData.text = "N/A"
-                fragmentBinding.gpsLongData.text = "N/A"
-                fragmentBinding.gpsAltData.text = "N/A"
-            }
-        })
-
+    private fun setupWifiObservers() {
         wifiScannerService.wifiScanStatus.observe(viewLifecycleOwner, {
             when (it) {
                 ScanStatus.NO_STATUS -> {
@@ -133,8 +84,70 @@ class MainFragment : Fragment() {
                 fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
             }
         })
+    }
 
-        return fragmentBinding.root
+    private fun setupGPSObservers() {
+        gpsScannerService.gpsScanStatus.observe(viewLifecycleOwner, {
+            when (it) {
+                ScanStatus.NO_STATUS -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = ""
+                }
+                ScanStatus.IN_PROGRESS -> {
+                    gpsScanInProgress = true
+                    fragmentBinding.fetchGpsDataStatus.text = "Scanning"
+                }
+                ScanStatus.LAST_SCAN_SUCCESS -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = "Scan Succeeded"
+                }
+                ScanStatus.LAST_SCAN_FAILED -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = "Scan Failed"
+                }
+            }
+        })
+
+        gpsScannerService.gpsScanResults.observe(viewLifecycleOwner, {
+            if (it != null) {
+                fragmentBinding.gpsLatData.text = it.latitude
+                fragmentBinding.gpsLongData.text = it.longitude
+                fragmentBinding.gpsAltData.text = "N/A"
+            } else {
+                fragmentBinding.gpsLatData.text = "N/A"
+                fragmentBinding.gpsLongData.text = "N/A"
+                fragmentBinding.gpsAltData.text = "N/A"
+            }
+        })
+    }
+
+    private fun setupClickListeners() {
+        fragmentBinding.fetchGpsData.setOnClickListener {
+            if (!gpsScanInProgress) {
+                gpsScanInProgress = true
+                fragmentBinding.fetchGpsDataStatus.text = ""
+                gpsScannerService.getLocation(requireContext())
+            }
+        }
+
+        fragmentBinding.fetchWifiData.setOnClickListener {
+            if (!wifiScanInProgress) {
+                wifiScanInProgress = true
+                fragmentBinding.fetchWifiDataStatus.text = ""
+                wifiScannerService.performScan(requireContext())
+            }
+        }
+
+        fragmentBinding.saveDataPoint.setOnClickListener {
+        }
+    }
+
+    private fun setupInitialText() {
+        fragmentBinding.gpsLatData.text = "N/A"
+        fragmentBinding.gpsLongData.text = "N/A"
+        fragmentBinding.gpsAltData.text = "N/A"
+
+        fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
     }
 
     override fun onDestroy() {
