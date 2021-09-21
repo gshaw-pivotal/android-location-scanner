@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import gs.location_scanner.R
 import gs.location_scanner.databinding.MainFragmentBinding
-import gs.location_scanner.service.WifiScanStatus
+import gs.location_scanner.service.GPSScannerService
+import gs.location_scanner.service.ScanStatus
 import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {
@@ -16,7 +17,11 @@ class MainFragment : Fragment() {
 
     private val wifiScannerService = WifiScannerService()
 
+    private val gpsScannerService = GPSScannerService()
+
     private var wifiScanInProgress: Boolean = false
+
+    private var gpsScanInProgress: Boolean = false
 
     companion object {
         fun newInstance() = MainFragment()
@@ -36,9 +41,20 @@ class MainFragment : Fragment() {
 
         wifiScannerService.setup(requireContext())
 
+        gpsScannerService.setup(requireContext())
+
+        fragmentBinding.gpsLatData.text = "N/A"
+        fragmentBinding.gpsLongData.text = "N/A"
+        fragmentBinding.gpsAltData.text = "N/A"
+
         fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
 
         fragmentBinding.fetchGpsData.setOnClickListener {
+            if (!gpsScanInProgress) {
+                gpsScanInProgress = true
+                fragmentBinding.fetchGpsDataStatus.text = ""
+                gpsScannerService.getLocation(requireContext())
+            }
         }
 
         fragmentBinding.fetchWifiData.setOnClickListener {
@@ -52,21 +68,54 @@ class MainFragment : Fragment() {
         fragmentBinding.saveDataPoint.setOnClickListener {
         }
 
+        gpsScannerService.gpsScanStatus.observe(viewLifecycleOwner, {
+            when (it) {
+                ScanStatus.NO_STATUS -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = ""
+                }
+                ScanStatus.IN_PROGRESS -> {
+                    gpsScanInProgress = true
+                    fragmentBinding.fetchGpsDataStatus.text = "Scanning"
+                }
+                ScanStatus.LAST_SCAN_SUCCESS -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = "Scan Succeeded"
+                }
+                ScanStatus.LAST_SCAN_FAILED -> {
+                    gpsScanInProgress = false
+                    fragmentBinding.fetchGpsDataStatus.text = "Scan Failed"
+                }
+            }
+        })
+
+        gpsScannerService.gpsScanResults.observe(viewLifecycleOwner, {
+            if (it != null) {
+                fragmentBinding.gpsLatData.text = it.latitude
+                fragmentBinding.gpsLongData.text = it.longitude
+                fragmentBinding.gpsAltData.text = "N/A"
+            } else {
+                fragmentBinding.gpsLatData.text = "N/A"
+                fragmentBinding.gpsLongData.text = "N/A"
+                fragmentBinding.gpsAltData.text = "N/A"
+            }
+        })
+
         wifiScannerService.wifiScanStatus.observe(viewLifecycleOwner, {
             when (it) {
-                WifiScanStatus.NO_STATUS -> {
+                ScanStatus.NO_STATUS -> {
                     wifiScanInProgress = false
                     fragmentBinding.fetchWifiDataStatus.text = ""
                 }
-                WifiScanStatus.IN_PROGRESS -> {
+                ScanStatus.IN_PROGRESS -> {
                     wifiScanInProgress = true
                     fragmentBinding.fetchWifiDataStatus.text = "Scanning"
                 }
-                WifiScanStatus.LAST_SCAN_SUCCESS -> {
+                ScanStatus.LAST_SCAN_SUCCESS -> {
                     wifiScanInProgress = false
                     fragmentBinding.fetchWifiDataStatus.text = "Scan Succeeded"
                 }
-                WifiScanStatus.LAST_SCAN_FAILED -> {
+                ScanStatus.LAST_SCAN_FAILED -> {
                     wifiScanInProgress = false
                     fragmentBinding.fetchWifiDataStatus.text = "Scan Failed"
                 }
