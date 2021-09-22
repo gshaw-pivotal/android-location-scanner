@@ -36,7 +36,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _fragmentBinding = MainFragmentBinding.inflate(inflater, container, false)
-        
+
         fragmentBinding.wifiDetailsList.adapter = wifiDetailsListAdaptor
 
         wifiScannerService.setup(requireContext())
@@ -60,15 +60,15 @@ class MainFragment : Fragment() {
                 }
                 ScanStatus.IN_PROGRESS -> {
                     wifiScanInProgress = true
-                    fragmentBinding.fetchWifiDataStatus.text = "Scanning"
+                    fragmentBinding.fetchWifiDataStatus.text = getString(R.string.scanning)
                 }
                 ScanStatus.LAST_SCAN_SUCCESS -> {
                     wifiScanInProgress = false
-                    fragmentBinding.fetchWifiDataStatus.text = "Scan Succeeded"
+                    fragmentBinding.fetchWifiDataStatus.text = getString(R.string.scan_succeeded)
                 }
                 ScanStatus.LAST_SCAN_FAILED -> {
                     wifiScanInProgress = false
-                    fragmentBinding.fetchWifiDataStatus.text = "Scan Failed"
+                    fragmentBinding.fetchWifiDataStatus.text = getString(R.string.scan_failed)
                 }
             }
         })
@@ -79,9 +79,15 @@ class MainFragment : Fragment() {
 
         wifiScannerService.wifiScanResultCount.observe(viewLifecycleOwner, {
             if (it != null) {
-                fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, it.toString())
+                fragmentBinding.wifiCount.text = getString(
+                    R.string.detected_wifi_network_count,
+                    it.toString()
+                )
             } else {
-                fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
+                fragmentBinding.wifiCount.text = getString(
+                    R.string.detected_wifi_network_count,
+                    getString(R.string.na)
+                )
             }
         })
     }
@@ -95,15 +101,15 @@ class MainFragment : Fragment() {
                 }
                 ScanStatus.IN_PROGRESS -> {
                     gpsScanInProgress = true
-                    fragmentBinding.fetchGpsDataStatus.text = "Scanning"
+                    fragmentBinding.fetchGpsDataStatus.text = getString(R.string.scanning)
                 }
                 ScanStatus.LAST_SCAN_SUCCESS -> {
                     gpsScanInProgress = false
-                    fragmentBinding.fetchGpsDataStatus.text = "Scan Succeeded"
+                    fragmentBinding.fetchGpsDataStatus.text = getString(R.string.scan_succeeded)
                 }
                 ScanStatus.LAST_SCAN_FAILED -> {
                     gpsScanInProgress = false
-                    fragmentBinding.fetchGpsDataStatus.text = "Scan Failed"
+                    fragmentBinding.fetchGpsDataStatus.text = getString(R.string.scan_failed)
                 }
             }
         })
@@ -112,11 +118,11 @@ class MainFragment : Fragment() {
             if (it != null) {
                 fragmentBinding.gpsLatData.text = it.latitude
                 fragmentBinding.gpsLongData.text = it.longitude
-                fragmentBinding.gpsAltData.text = "N/A"
+                fragmentBinding.gpsAltData.text = getString(R.string.na)
             } else {
-                fragmentBinding.gpsLatData.text = "N/A"
-                fragmentBinding.gpsLongData.text = "N/A"
-                fragmentBinding.gpsAltData.text = "N/A"
+                fragmentBinding.gpsLatData.text = getString(R.string.na)
+                fragmentBinding.gpsLongData.text = getString(R.string.na)
+                fragmentBinding.gpsAltData.text = getString(R.string.na)
             }
         })
     }
@@ -143,11 +149,14 @@ class MainFragment : Fragment() {
     }
 
     private fun setupInitialText() {
-        fragmentBinding.gpsLatData.text = "N/A"
-        fragmentBinding.gpsLongData.text = "N/A"
-        fragmentBinding.gpsAltData.text = "N/A"
+        fragmentBinding.gpsLatData.text = getString(R.string.na)
+        fragmentBinding.gpsLongData.text = getString(R.string.na)
+        fragmentBinding.gpsAltData.text = getString(R.string.na)
 
-        fragmentBinding.wifiCount.text = getString(R.string.detected_wifi_network_count, "N/A")
+        fragmentBinding.wifiCount.text = getString(
+            R.string.detected_wifi_network_count,
+            getString(R.string.na)
+        )
     }
 
     override fun onDestroy() {
