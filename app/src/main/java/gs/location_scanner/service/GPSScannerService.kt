@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
 import gs.location_scanner.data.GPSLocationStats
+import gs.location_scanner.data.ScanStatus
 
 
 class GPSScannerService {

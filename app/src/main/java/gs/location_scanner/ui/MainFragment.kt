@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import gs.location_scanner.R
 import gs.location_scanner.databinding.MainFragmentBinding
 import gs.location_scanner.service.GPSScannerService
-import gs.location_scanner.service.ScanStatus
+import gs.location_scanner.data.ScanStatus
 import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {

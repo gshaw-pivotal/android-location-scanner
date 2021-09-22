@@ -1,4 +1,4 @@
-package gs.location_scanner.service
+package gs.location_scanner.data
 
 enum class ScanStatus {
     IN_PROGRESS,

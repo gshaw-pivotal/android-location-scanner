@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import androidx.lifecycle.MutableLiveData
+import gs.location_scanner.data.ScanStatus
 import gs.location_scanner.data.WifiNetworkStats
 
 class WifiScannerService {
