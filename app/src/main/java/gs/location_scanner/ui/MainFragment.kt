@@ -9,6 +9,7 @@ import gs.location_scanner.R
 import gs.location_scanner.databinding.MainFragmentBinding
 import gs.location_scanner.service.GPSScannerService
 import gs.location_scanner.data.ScanStatus
+import gs.location_scanner.service.FileService
 import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {
@@ -18,6 +19,8 @@ class MainFragment : Fragment() {
     private val wifiScannerService = WifiScannerService()
 
     private val gpsScannerService = GPSScannerService()
+
+    private val fileService = FileService()
 
     private var wifiScanInProgress: Boolean = false
 
@@ -42,6 +45,8 @@ class MainFragment : Fragment() {
         wifiScannerService.setup(requireContext())
 
         gpsScannerService.setup(requireContext())
+
+        fileService.setup(requireContext())
 
         setupInitialText()
         setupClickListeners()
@@ -145,6 +150,16 @@ class MainFragment : Fragment() {
         }
 
         fragmentBinding.saveDataPoint.setOnClickListener {
+            if (!wifiScanInProgress && !gpsScanInProgress) {
+                fileService.saveLocationScan(
+                    gpsScannerService.gpsScanResults.value,
+                    wifiScannerService.wifiScanResults.value
+                )
+            }
+        }
+
+        fragmentBinding.viewDataPoints.setOnClickListener {
+            fileService.viewLocationsData()
         }
     }
 
