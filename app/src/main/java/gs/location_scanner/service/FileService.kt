@@ -3,18 +3,15 @@ package gs.location_scanner.service
 import android.content.Context
 import gs.location_scanner.data.GPSLocationStats
 import gs.location_scanner.data.WifiNetworkStats
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 class FileService {
 
-    private lateinit var fileWriter: FileOutputStream
+    private val fileName: String = "location-data.txt"
 
-    private lateinit var fileReader: FileInputStream
+    private lateinit var context: Context
 
     fun setup(context: Context) {
-        fileWriter = context.openFileOutput("location-data.txt", Context.MODE_APPEND)
-        fileReader = context.openFileInput("location-data.txt")
+        this.context = context
     }
 
     fun saveLocationScan(
@@ -22,21 +19,26 @@ class FileService {
         wifiNetworkStats: List<WifiNetworkStats>?
     ) {
         if (gpsLocationStats != null && wifiNetworkStats != null) {
-            fileWriter.use {
-                it.write(
-                    generateLocationScanString(
-                        gpsLocationStats,
-                        wifiNetworkStats
-                    ).toByteArray()
-                )
-            }
+            context
+                .openFileOutput(fileName, Context.MODE_APPEND)
+                .use {
+                    it.write(
+                        generateLocationScanString(
+                            gpsLocationStats,
+                            wifiNetworkStats
+                        ).toByteArray()
+                    )
+                }
         }
     }
 
     fun viewLocationsData() {
-        fileReader.bufferedReader().use {
-            it.forEachLine { line -> println(line) }
-        }
+        context
+            .openFileInput(fileName)
+            .bufferedReader()
+            .use {
+                it.forEachLine { line -> println(line) }
+            }
     }
 
     private fun generateLocationScanString(
