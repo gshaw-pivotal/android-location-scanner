@@ -41,6 +41,11 @@ class FileService {
             }
     }
 
+    fun clearLocationsData(context: Context) {
+        context.deleteFile(fileName)
+        context.openFileOutput(fileName, 0).close()
+    }
+
     private fun generateLocationScanString(
         gpsLocationStats: GPSLocationStats,
         wifiNetworkStats: List<WifiNetworkStats>

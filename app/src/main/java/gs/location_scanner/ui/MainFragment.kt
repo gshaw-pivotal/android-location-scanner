@@ -161,6 +161,10 @@ class MainFragment : Fragment() {
         fragmentBinding.viewDataPoints.setOnClickListener {
             fileService.viewLocationsData()
         }
+
+        fragmentBinding.clearDataPoints.setOnClickListener {
+            fileService.clearLocationsData(requireContext())
+        }
     }
 
     private fun setupInitialText() {
