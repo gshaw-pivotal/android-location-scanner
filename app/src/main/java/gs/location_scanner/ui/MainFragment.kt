@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import gs.location_scanner.MainActivity
 import gs.location_scanner.R
-import gs.location_scanner.databinding.MainFragmentBinding
-import gs.location_scanner.service.GPSScannerService
 import gs.location_scanner.data.ScanStatus
+import gs.location_scanner.databinding.MainFragmentBinding
 import gs.location_scanner.service.FileService
+import gs.location_scanner.service.GPSScannerService
 import gs.location_scanner.service.WifiScannerService
 
 class MainFragment : Fragment() {
@@ -27,7 +28,7 @@ class MainFragment : Fragment() {
     private var gpsScanInProgress: Boolean = false
 
     companion object {
-        fun newInstance() = MainFragment()
+        const val TAG: String = "Main Fragment"
     }
 
     private var _fragmentBinding: MainFragmentBinding? = null
@@ -159,7 +160,7 @@ class MainFragment : Fragment() {
         }
 
         fragmentBinding.viewDataPoints.setOnClickListener {
-            fileService.viewLocationsData()
+            (requireActivity() as MainActivity).navigateFromMainToViewData()
         }
 
         fragmentBinding.clearDataPoints.setOnClickListener {
