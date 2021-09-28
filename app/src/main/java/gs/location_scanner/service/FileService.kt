@@ -3,6 +3,7 @@ package gs.location_scanner.service
 import android.content.Context
 import gs.location_scanner.data.GPSLocationStats
 import gs.location_scanner.data.WifiNetworkStats
+import java.lang.StringBuilder
 
 class FileService {
 
@@ -32,13 +33,18 @@ class FileService {
         }
     }
 
-    fun viewLocationsData() {
+    fun viewLocationsData(): String {
+        var fileContents = StringBuilder()
         context
             .openFileInput(fileName)
             .bufferedReader()
             .use {
-                it.forEachLine { line -> println(line) }
+                it.forEachLine { line ->
+                    fileContents.append(line)
+                }
             }
+
+        return fileContents.toString()
     }
 
     fun clearLocationsData(context: Context) {
