@@ -13,4 +13,5 @@
     <string name="scan_succeeded">Scan Succeeded</string>
     <string name="scan_failed">Scan Failed</string>
     <string name="na">N/A</string>
+    <string name="close">Close</string>
 </resources>
