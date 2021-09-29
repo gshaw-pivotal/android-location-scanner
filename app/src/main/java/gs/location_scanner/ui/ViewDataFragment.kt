@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import gs.location_scanner.MainActivity
+import gs.location_scanner.R
 import gs.location_scanner.databinding.ViewDataFragmentBinding
 import gs.location_scanner.service.FileService
 
@@ -33,7 +34,17 @@ class ViewDataFragment  : Fragment() {
             (requireActivity() as MainActivity).navigateFromViewDataToMain()
         }
 
-        fragmentBinding.viewDataContent.text = fileService.viewLocationsData()
+        fileService.locationDataPointContent.observe(viewLifecycleOwner, {
+            if (it != null) {
+                fragmentBinding.viewDataContent.text = it
+            } else {
+                fragmentBinding.viewDataContent.text = ""
+            }
+        })
+
+        fragmentBinding.viewDataContent.text = ""
+
+        fileService.viewLocationsData()
 
         return fragmentBinding.root
     }

@@ -1,6 +1,7 @@
 package gs.location_scanner.service
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import gs.location_scanner.data.GPSLocationStats
 import gs.location_scanner.data.WifiNetworkStats
 import java.lang.StringBuilder
@@ -10,6 +11,8 @@ class FileService {
     private val fileName: String = "location-data.txt"
 
     private lateinit var context: Context
+
+    val locationDataPointContent: MutableLiveData<String> = MutableLiveData(null)
 
     fun setup(context: Context) {
         this.context = context
@@ -33,7 +36,7 @@ class FileService {
         }
     }
 
-    fun viewLocationsData(): String {
+    fun viewLocationsData() {
         var fileContents = StringBuilder()
         context
             .openFileInput(fileName)
@@ -44,7 +47,7 @@ class FileService {
                 }
             }
 
-        return fileContents.toString()
+        locationDataPointContent.postValue(fileContents.toString())
     }
 
     fun clearLocationsData(context: Context) {
