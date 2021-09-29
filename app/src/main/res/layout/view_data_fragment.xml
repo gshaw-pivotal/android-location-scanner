@@ -13,6 +13,13 @@
         android:layout_height="wrap_content"
         android:text="@string/close" />
 
+    <TextView
+        android:id="@+id/view_data_content_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/total_number_of_stored_data_points"
+        android:textSize="18sp"/>
+
     <ScrollView
         android:id="@+id/view_data_scroll_view"
         android:layout_width="match_parent"

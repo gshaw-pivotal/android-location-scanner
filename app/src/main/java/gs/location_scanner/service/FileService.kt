@@ -12,6 +12,10 @@ class FileService {
 
     private lateinit var context: Context
 
+    private var dataPointCounter = 0
+
+    val locationDataPointCount: MutableLiveData<Int> = MutableLiveData(null)
+
     val locationDataPointContent: MutableLiveData<String> = MutableLiveData(null)
 
     fun setup(context: Context) {
@@ -44,15 +48,24 @@ class FileService {
             .use {
                 it.forEachLine { line ->
                     fileContents.append(line)
+                    buildLocationListForDisplaying(line)
                 }
             }
 
+        locationDataPointCount.postValue(dataPointCounter)
         locationDataPointContent.postValue(fileContents.toString())
     }
 
     fun clearLocationsData(context: Context) {
         context.deleteFile(fileName)
         context.openFileOutput(fileName, 0).close()
+    }
+
+    private fun buildLocationListForDisplaying(line: String) {
+        if (line.startsWith("\"LocationData\"")) {
+            //Start of a new location data point
+            dataPointCounter++
+        }
     }
 
     private fun generateLocationScanString(

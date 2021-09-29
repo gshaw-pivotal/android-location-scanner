@@ -34,6 +34,15 @@ class ViewDataFragment  : Fragment() {
             (requireActivity() as MainActivity).navigateFromViewDataToMain()
         }
 
+        fileService.locationDataPointCount.observe(viewLifecycleOwner, {
+            if (it != null) {
+                fragmentBinding.viewDataContentCount.text = getString(
+                    R.string.total_number_of_stored_data_points,
+                    it.toString()
+                )
+            }
+        })
+
         fileService.locationDataPointContent.observe(viewLifecycleOwner, {
             if (it != null) {
                 fragmentBinding.viewDataContent.text = it
@@ -42,6 +51,10 @@ class ViewDataFragment  : Fragment() {
             }
         })
 
+        fragmentBinding.viewDataContentCount.text = getString(
+            R.string.total_number_of_stored_data_points,
+            getString(R.string.na)
+        )
         fragmentBinding.viewDataContent.text = ""
 
         fileService.viewLocationsData()
