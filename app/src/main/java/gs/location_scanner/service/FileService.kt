@@ -85,6 +85,6 @@ class FileService {
         "    \"WifiNetworks\": [\n" +
                 networkString +
         "    \n]\n" +
-        "}"
+        "}\n"
     }
 }
