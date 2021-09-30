@@ -3,6 +3,7 @@ package gs.location_scanner.service
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import gs.location_scanner.data.GPSLocationStats
+import gs.location_scanner.data.LocationPreview
 import gs.location_scanner.data.WifiNetworkStats
 import java.lang.StringBuilder
 
@@ -14,9 +15,15 @@ class FileService {
 
     private var dataPointCounter = 0
 
+    private var currentLocationPreview: LocationPreview? = null
+
+    private val locationList: MutableList<LocationPreview> = mutableListOf()
+
     val locationDataPointCount: MutableLiveData<Int> = MutableLiveData(null)
 
     val locationDataPointContent: MutableLiveData<String> = MutableLiveData(null)
+
+    val locationPreviewList: MutableLiveData<List<LocationPreview>> = MutableLiveData(null)
 
     fun setup(context: Context) {
         this.context = context
@@ -52,8 +59,15 @@ class FileService {
                 }
             }
 
+        //The last one
+        if (currentLocationPreview != null) {
+            //Add the previous location object to the list
+            locationList.add(currentLocationPreview!!)
+        }
+
         locationDataPointCount.postValue(dataPointCounter)
         locationDataPointContent.postValue(fileContents.toString())
+        locationPreviewList.postValue(locationList)
     }
 
     fun clearLocationsData(context: Context) {
@@ -63,8 +77,38 @@ class FileService {
 
     private fun buildLocationListForDisplaying(line: String) {
         if (line.startsWith("\"LocationData\"")) {
-            //Start of a new location data point
+            //Start of a new location data point\
+                if (currentLocationPreview != null) {
+                    //Add the previous location object to the list
+                    locationList.add(currentLocationPreview!!)
+                }
+            currentLocationPreview = LocationPreview()
             dataPointCounter++
+        }
+
+        //Check to see if the current line has lat, long or network count
+        if (line.contains("\"Latitude\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.latitude = line
+                .substringAfter("\"Latitude\": ")
+                .replace("\"", "")
+                .replace(",", "")
+                .trim()
+        }
+
+        if (line.contains("\"Longitude\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.longitude = line
+                .substringAfter("\"Longitude\": ")
+                .replace("\"", "")
+                .replace(",", "")
+                .trim()
+        }
+
+        if (line.contains("\"WifiNetworkCount\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.wifiNetworkCount = line
+                .substringAfter("\"WifiNetworkCount\": ")
+                .replace("\"", "")
+                .replace(",", "")
+                .trim().toInt()
         }
     }
 

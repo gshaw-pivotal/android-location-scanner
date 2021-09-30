@@ -51,6 +51,12 @@ class ViewDataFragment  : Fragment() {
             }
         })
 
+        fileService.locationPreviewList.observe(viewLifecycleOwner, {
+            if (it != null) {
+                println("List length:${it.size}")
+            }
+        })
+
         fragmentBinding.viewDataContentCount.text = getString(
             R.string.total_number_of_stored_data_points,
             getString(R.string.na)
