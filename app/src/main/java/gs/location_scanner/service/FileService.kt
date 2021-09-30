@@ -95,6 +95,7 @@ class FileService {
 
         return "\"LocationData\": {\n" +
         "    " + locationString + ",\n" +
+        "    \"WifiNetworkCount\": " + wifiNetworkStats.size + ",\n" +
         "    \"WifiNetworks\": [\n" +
                 networkString +
         "    \n]\n" +
