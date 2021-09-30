@@ -75,43 +75,6 @@ class FileService {
         context.openFileOutput(fileName, 0).close()
     }
 
-    private fun buildLocationListForDisplaying(line: String) {
-        if (line.startsWith("\"LocationData\"")) {
-            //Start of a new location data point\
-                if (currentLocationPreview != null) {
-                    //Add the previous location object to the list
-                    locationList.add(currentLocationPreview!!)
-                }
-            currentLocationPreview = LocationPreview()
-            dataPointCounter++
-        }
-
-        //Check to see if the current line has lat, long or network count
-        if (line.contains("\"Latitude\"") && currentLocationPreview != null) {
-            currentLocationPreview!!.latitude = line
-                .substringAfter("\"Latitude\": ")
-                .replace("\"", "")
-                .replace(",", "")
-                .trim()
-        }
-
-        if (line.contains("\"Longitude\"") && currentLocationPreview != null) {
-            currentLocationPreview!!.longitude = line
-                .substringAfter("\"Longitude\": ")
-                .replace("\"", "")
-                .replace(",", "")
-                .trim()
-        }
-
-        if (line.contains("\"WifiNetworkCount\"") && currentLocationPreview != null) {
-            currentLocationPreview!!.wifiNetworkCount = line
-                .substringAfter("\"WifiNetworkCount\": ")
-                .replace("\"", "")
-                .replace(",", "")
-                .trim().toInt()
-        }
-    }
-
     private fun generateLocationScanString(
         gpsLocationStats: GPSLocationStats,
         wifiNetworkStats: List<WifiNetworkStats>
@@ -125,24 +88,57 @@ class FileService {
         val networkString = if (wifiNetworkStats.isNotEmpty()) {
             wifiNetworkStats.joinToString(separator = ",") { network ->
                 "{" +
-                "        \"Network\": {\n" +
-                "          \"SSID\": \"" + network.ssid + "\",\n" +
-                "          \"BSSID\": \"" + network.bssid + "\",\n" +
-                "          \"SignalStrength\": " + network.signalLevelIndBm + ",\n" +
-                "          \"SignalFrequency\": " + network.signalFrequencyInMHZ + "\n" +
-                "        }\n" +
-                "}"
+                        "        \"Network\": {\n" +
+                        "          \"SSID\": \"" + network.ssid + "\",\n" +
+                        "          \"BSSID\": \"" + network.bssid + "\",\n" +
+                        "          \"SignalStrength\": " + network.signalLevelIndBm + ",\n" +
+                        "          \"SignalFrequency\": " + network.signalFrequencyInMHZ + "\n" +
+                        "        }\n" +
+                        "}"
             }
         } else {
             ""
         }
 
         return "\"LocationData\": {\n" +
-        "    " + locationString + ",\n" +
-        "    \"WifiNetworkCount\": " + wifiNetworkStats.size + ",\n" +
-        "    \"WifiNetworks\": [\n" +
+                "    " + locationString + ",\n" +
+                "    \"WifiNetworkCount\": " + wifiNetworkStats.size + ",\n" +
+                "    \"WifiNetworks\": [\n" +
                 networkString +
-        "    \n]\n" +
-        "}\n"
+                "    \n]\n" +
+                "}\n"
+    }
+
+    private fun buildLocationListForDisplaying(line: String) {
+        if (line.startsWith("\"LocationData\"")) {
+            //Start of a new location data point\
+                if (currentLocationPreview != null) {
+                    //Add the previous location object to the list
+                    locationList.add(currentLocationPreview!!)
+                }
+            currentLocationPreview = LocationPreview()
+            dataPointCounter++
+        }
+
+        //Check to see if the current line has lat, long or network count
+        if (line.contains("\"Latitude\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.latitude = getValueFromLine(line, "Latitude")
+        }
+
+        if (line.contains("\"Longitude\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.longitude = getValueFromLine(line, "Longitude")
+        }
+
+        if (line.contains("\"WifiNetworkCount\"") && currentLocationPreview != null) {
+            currentLocationPreview!!.wifiNetworkCount = getValueFromLine(line, "WifiNetworkCount").toInt()
+        }
+    }
+
+    private fun getValueFromLine(line: String, key: String): String {
+        return line
+            .substringAfter("\"${key}\": ")
+            .replace("\"", "")
+            .replace(",", "")
+            .trim()
     }
 }

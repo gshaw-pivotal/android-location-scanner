@@ -30,10 +30,27 @@ class ViewDataFragment  : Fragment() {
 
         fileService.setup(requireContext())
 
+        setupClickListeners()
+        setupObservers()
+
+        fragmentBinding.viewDataContentCount.text = getString(
+            R.string.total_number_of_stored_data_points,
+            getString(R.string.na)
+        )
+        fragmentBinding.viewDataContent.text = ""
+
+        fileService.viewLocationsData()
+
+        return fragmentBinding.root
+    }
+
+    private fun setupClickListeners() {
         fragmentBinding.closeViewData.setOnClickListener {
             (requireActivity() as MainActivity).navigateFromViewDataToMain()
         }
+    }
 
+    private fun setupObservers() {
         fileService.locationDataPointCount.observe(viewLifecycleOwner, {
             if (it != null) {
                 fragmentBinding.viewDataContentCount.text = getString(
@@ -54,17 +71,8 @@ class ViewDataFragment  : Fragment() {
         fileService.locationPreviewList.observe(viewLifecycleOwner, {
             if (it != null) {
                 println("List length:${it.size}")
+                it.map { println(it.latitude + "," + it.longitude + "," + it.wifiNetworkCount) }
             }
         })
-
-        fragmentBinding.viewDataContentCount.text = getString(
-            R.string.total_number_of_stored_data_points,
-            getString(R.string.na)
-        )
-        fragmentBinding.viewDataContent.text = ""
-
-        fileService.viewLocationsData()
-
-        return fragmentBinding.root
     }
 }
