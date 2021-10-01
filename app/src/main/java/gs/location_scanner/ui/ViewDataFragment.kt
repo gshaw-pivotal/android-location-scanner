@@ -12,6 +12,8 @@ import gs.location_scanner.service.FileService
 
 class ViewDataFragment  : Fragment() {
 
+    private val locationPreviewListAdaptor = LocationPreviewListAdaptor()
+
     private val fileService = FileService()
 
     companion object {
@@ -28,6 +30,8 @@ class ViewDataFragment  : Fragment() {
     ): View {
         _fragmentBinding = ViewDataFragmentBinding.inflate(inflater, container, false)
 
+        fragmentBinding.viewDataLocationList.adapter = locationPreviewListAdaptor
+
         fileService.setup(requireContext())
 
         setupClickListeners()
@@ -37,7 +41,6 @@ class ViewDataFragment  : Fragment() {
             R.string.total_number_of_stored_data_points,
             getString(R.string.na)
         )
-        fragmentBinding.viewDataContent.text = ""
 
         fileService.viewLocationsData()
 
@@ -60,18 +63,9 @@ class ViewDataFragment  : Fragment() {
             }
         })
 
-        fileService.locationDataPointContent.observe(viewLifecycleOwner, {
-            if (it != null) {
-                fragmentBinding.viewDataContent.text = it
-            } else {
-                fragmentBinding.viewDataContent.text = ""
-            }
-        })
-
         fileService.locationPreviewList.observe(viewLifecycleOwner, {
             if (it != null) {
-                println("List length:${it.size}")
-                it.map { println(it.latitude + "," + it.longitude + "," + it.wifiNetworkCount) }
+                locationPreviewListAdaptor.submitList(it)
             }
         })
     }
